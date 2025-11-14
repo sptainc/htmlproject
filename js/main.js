@@ -6,6 +6,11 @@
 
 jQuery(document).ready(function($) {
 	"use strict";
+	var includes = $('[data-include]')
+	$.each(includes, function () {
+		var file = 'partial/' + $(this).data('include') + '.html'
+		$(this).load(file)
+	})
 	var siteMenuClone = function() {
 		
 		$('.js-clone-nav').each(function() {
