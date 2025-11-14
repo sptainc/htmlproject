@@ -278,35 +278,26 @@ jQuery(document).ready(function($) {
 	}
 	counter();
 	
-	// Define the data to be sent in the request body
-	const data = {
-		token: "323de6f514e8b8d930eda173a14f9483c180a54785d1573394cac72228ac6758",
-		sheetName: "Blogs"
-	};
-	
-	// Define the URL of the API endpoint
-	const apiUrl = "https://script.google.com/macros/s/AKfycbwkiAIdvBKmL5QdM4u4sI11nn1R8F5kZTiTA1uU1fJsSwbs0o3oe3IWuShr1acUvq8U/exec"; // Example API
-	
-	// Send the POST request using fetch
-	fetch(apiUrl, {
-		method: "POST", // Specify the HTTP method as POST
-		headers: {
-			"Content-Type": "application/json", // Indicate that the body is JSON
-		},
-		body: JSON.stringify(data), // Convert the JavaScript object to a JSON string
-	})
-	.then((response) => {
-		// Check if the request was successful (status code 2xx)
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+	async function getData() {
+		try {
+			let deployId = "AKfycbw3xVRmTh8EGIRHLx_GHD9r0HBviwt8FhPQ1xFewM6wzSaKasnN582zkyjYMOPqE7hN";
+			let url = "https://script.google.com/macros/s/" + deployId + "/exec";
+			let sheetName = "sheetName=Main";
+			const response = await fetch(url + '?'+  sheetName); // Replace with your API endpoint
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			const result = await response.json(); // Or .text() if the response is plain text
+			console.log(result);
+
+			console.log(window.location.href.split('/') );
+			// if ( window.location.pathname  = "")
+				$("#pageTitle").text(result.data[0]["Title"]);
+		} catch (error) {
+			console.error('There was a problem with the fetch operation:', error);
 		}
-		return response.json(); // Parse the JSON response
-	})
-	.then((responseData) => {
-		console.log("Success:", responseData); // Handle the successful response
-	})
-	.catch((error) => {
-		console.error("Error:", error); // Handle any errors during the request
-	});
+	}
+
+	getData();
 	
 });
