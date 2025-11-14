@@ -6,10 +6,10 @@
 
 jQuery(document).ready(function($) {
 	"use strict";
-	var includes = $('[data-include]')
+	var includes = $('[data-include]');
 	$.each(includes, function () {
-		var file = 'partials/' + $(this).data('include') + '.html'
-		$(this).load(file)
+		var file = 'partials/' + $(this).data('include') + '.html';
+		$(this).load(file);
 	})
 	var siteMenuClone = function() {
 		
