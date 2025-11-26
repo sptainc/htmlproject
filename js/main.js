@@ -14,10 +14,12 @@ jQuery(document).ready(function($) {
 	$.each(includes, function () {
 		var name = $(this).data('include');
 		var file = 'partials/' + name + '.html';
+		console.log(location.protocol);
 		if (location.protocol === 'file:') {
-			var year = new Date().getFullYear();
+			console.log(name);
+			// var year = new Date().getFullYear();
 			if (name === 'footer') {
-				$(this).html('<div class="container"><div class="row "><div class="col-12 text-md-center text-left"><p>Copyright ©' + year + ' All rights reserved</p></div></div></div>');
+				$(this).html('<div class="container"><div class="row "><div class="col-12 text-md-center text-left"><p>Copyright ©  All rights reserved</p></div></div></div>');
 				return;
 			}
 			if (name === 'header') {
