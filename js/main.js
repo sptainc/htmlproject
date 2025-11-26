@@ -12,7 +12,19 @@ jQuery(document).ready(function($) {
 
 	var includes = $('[data-include]');
 	$.each(includes, function () {
-		var file = 'partials/' + $(this).data('include') + '.html';
+		var name = $(this).data('include');
+		var file = 'partials/' + name + '.html';
+		if (location.protocol === 'file:') {
+			var year = new Date().getFullYear();
+			if (name === 'footer') {
+				$(this).html('<div class="container"><div class="row "><div class="col-12 text-md-center text-left"><p>Copyright ©' + year + ' All rights reserved</p></div></div></div>');
+				return;
+			}
+			if (name === 'header') {
+				$(this).html('<div class="container"><div class="row align-items-center"><div class="col-11 col-xl-4"><h1 class="mb-0 site-logo"><a href="index.html" class="text-white mb-0">TRILIEUNHABE<span class="text-primary">.</span></a></h1></div></div></div>');
+				return;
+			}
+		}
 		$(this).load(file);
 	})
 	var siteMenuClone = function() {
@@ -290,7 +302,7 @@ jQuery(document).ready(function($) {
 	
 	
 	getMainData();
-	getPageIndex();
+	// getPageIndex();
 	function getMainData() {
 		try {
 			$.ajax({
@@ -301,8 +313,8 @@ jQuery(document).ready(function($) {
 					let data = result.data[0];
 					$("#pageTitle").text(data["Title"]);
 					setTxt2El("address", data["Address"]);
-					setTxt2El("phoneNumber", data["PhoneNumber"]);
-					setTxt2El("email", data["Email"]);
+					setTxt2El("phoneNumber", data["PhoneNumber"], "tel:" + data["PhoneNumber"]);
+					setTxt2El("email", data["Email"], "mailto:" + data["Address"]);
 					setTxt2El("openTime", data["openTime"]);
 				}
 			});
@@ -321,8 +333,7 @@ jQuery(document).ready(function($) {
 				success: function(result) {
 					let data = result.data[0];
 					setTxt2El("aboutUs", data["aboutUs"]);
-					setTxt2El("lnkBeforeAboutUs", data["lnkTextBeforAboutUs"]);
-					$("a[data-content='lnkBeforeAboutUs']").attr("href",result.data[0]["lnkBeforeAboutUs"]);
+					setTxt2El("lnkBeforeAboutUs", data["lnkTextBeforAboutUs"], data["lnkBeforeAboutUs"]);
 				}
 			});
 		} catch (error) {
@@ -330,13 +341,16 @@ jQuery(document).ready(function($) {
 		}
 	}
 
-	function setTxt2El( name, val){
+	function setTxt2El( name, val, valHref ){
 		var $els = $("[data-content='" + name + "']");
 		$els.text(val);
 		$els.each(function(){
 			var el = this;
 			if (el.tagName && el.tagName.toLowerCase() === 'a') {
-				if (typeof val === 'string' && /^(https?:\/\/|mailto:|tel:)/i.test(val)) {
+				var hasHrefArg = (typeof valHref !== 'undefined');
+				if (hasHrefArg) {
+					$(el).attr('href', valHref || '');
+				} else if (typeof val === 'string' && /^(https?:\/\/|mailto:|tel:)/i.test(val)) {
 					$(el).attr('href', val);
 				}
 			}
