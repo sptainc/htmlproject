@@ -6,6 +6,10 @@
 
 jQuery(document).ready(function($) {
 	"use strict";
+
+	const deployId = "AKfycbw3xVRmTh8EGIRHLx_GHD9r0HBviwt8FhPQ1xFewM6wzSaKasnN582zkyjYMOPqE7hN";
+	const constUrl = "https://script.google.com/macros/s/" + deployId + "/exec";
+
 	var includes = $('[data-include]');
 	$.each(includes, function () {
 		var file = 'partials/' + $(this).data('include') + '.html';
@@ -282,27 +286,52 @@ jQuery(document).ready(function($) {
 		
 	}
 	counter();
-	
-	async function getData() {
-		try {
-			let deployId = "AKfycbw3xVRmTh8EGIRHLx_GHD9r0HBviwt8FhPQ1xFewM6wzSaKasnN582zkyjYMOPqE7hN";
-			let url = "https://script.google.com/macros/s/" + deployId + "/exec";
-			let sheetName = "sheetName=Main";
-			const response = await fetch(url + '?'+  sheetName); // Replace with your API endpoint
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-			const result = await response.json(); // Or .text() if the response is plain text
-			console.log(result);
 
-			console.log(window.location.href.split('/') );
-			// if ( window.location.pathname  = "")
-				$("#pageTitle").text(result.data[0]["Title"]);
+	
+	
+	getMainData();
+	getPageIndex();
+	function getMainData() {
+		try {
+			$.ajax({
+				url: constUrl + '?'+  "sheetName=Main",
+				method: 'GET',
+		        dataType: 'json',
+				success: function(result) {
+					let data = result.data[0];
+					$("#pageTitle").text(data["Title"]);
+					setTxt2El("address", data["Address"]);
+					setTxt2El("phoneNumber", data["PhoneNumber"]);
+					setTxt2El("email", data["Email"]);
+					setTxt2El("openTime", data["openTime"]);
+				}
+			});
 		} catch (error) {
 			console.error('There was a problem with the fetch operation:', error);
 		}
 	}
 
-	getData();
+		
+	function getPageIndex() {
+		try {
+			$.ajax({
+				url: constUrl + '?'+  "sheetName=TrangChu",
+				method: 'GET',
+		        dataType: 'json',
+				success: function(result) {
+					let data = result.data[0];
+					setTxt2El("aboutUs", data["aboutUs"]);
+					setTxt2El("lnkBeforeAboutUs", data["lnkTextBeforAboutUs"]);
+					$("a[data-content='lnkBeforeAboutUs']").attr("href",result.data[0]["lnkBeforeAboutUs"]);
+				}
+			});
+		} catch (error) {
+			console.error('There was a problem with the fetch operation:', error);
+		}
+	}
+
+	function setTxt2El( name, val){
+		$("[data-content='" + name + "']").text(val);
+	}
 	
 });
