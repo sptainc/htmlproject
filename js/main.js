@@ -331,7 +331,16 @@ jQuery(document).ready(function($) {
 	}
 
 	function setTxt2El( name, val){
-		$("[data-content='" + name + "']").text(val);
+		var $els = $("[data-content='" + name + "']");
+		$els.text(val);
+		$els.each(function(){
+			var el = this;
+			if (el.tagName && el.tagName.toLowerCase() === 'a') {
+				if (typeof val === 'string' && /^(https?:\/\/|mailto:|tel:)/i.test(val)) {
+					$(el).attr('href', val);
+				}
+			}
+		});
 	}
 	
 });
